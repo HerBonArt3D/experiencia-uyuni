@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal 360 - Salar de Uyuni</title>
+    
+    <!-- 1. Cargamos el motor A-Frame -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    
+    <style>
+        /* Estilos básicos para la página y los mensajes de carga */
+        body { margin: 0; padding: 0; background-color: #000; font-family: sans-serif; }
+        
+        #pantalla-carga {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #1a1a1a; color: white; display: flex; 
+            flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; /* Se asegura de estar por encima de todo */
+        }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white; border-radius: 50%;
+            animation: girar 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes girar { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA DE CARGA (Para que el turista sepa que algo está pasando) -->
+    <div id="pantalla-carga">
+        <div class="spinner"></div>
+        <h2>Viajando a Uyuni...</h2>
+        <p>Por favor, espera un momento</p>
+    </div>
+
+    <!-- LA ESCENA VIRTUAL (Aquí ocurre la magia) -->
+    <a-scene 
+        loading-screen="enabled: false" 
+        vr-mode-ui="enabled: true, enterVRButton: #miBotonVR">
+        
+        <!-- A. Zona de carga de recursos -->
+        <a-assets>
+            <!-- IMPORTANTE: El src debe ser exactamente el nombre de tu foto -->
+            <img id="fondo-salar" src="uyuni360.jpg" crossorigin="anonymous">
+        </a-assets>
+        
+        <!-- B. La esfera gigante que nos rodea y proyecta la foto -->
+        <!-- Utilizamos rotation para alinear el "frente" de la foto con la mirada del usuario -->
+        <a-sky src="#fondo-salar" rotation="0 -90 0"></a-sky>
+        
+        <!-- C. La cámara (los ojos del usuario) -->
+        <a-camera look-controls="reverseMouseDrag: true" position="0 1.6 0"></a-camera>
+        
+    </a-scene>
+
+    <!-- Script para ocultar la pantalla de carga cuando todo esté listo -->
+    <script>
+        // Le decimos al navegador que espere a que la foto termine de cargar
+        document.querySelector('a-assets').addEventListener('loaded', function () {
+            // Cuando carga, ocultamos la pantalla negra con el spinner
+            document.getElementById('pantalla-carga').style.display = 'none';
+        });
+    </script>
+
+</body>
+</html>
